@@ -1,0 +1,107 @@
+$board: #100758;
+$player1: #da2e2e;
+$player2: #ffe31b;
+
+@keyframes tileDrop {
+	0% {
+		transform: translate(50%, -800%);
+	}
+
+	100% {
+		transform: translate(50%, -50%);
+	}
+}
+
+.c4 {}
+
+.c4__board {
+	display: flex;
+}
+
+.c4__column {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.c4__tile {
+	width: 50px;
+	height: 50px;
+
+	position: relative;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		right: 50%;
+		transform: translate(50%, -50%);
+
+		display: block;
+		width: 80%;
+		height: 80%;
+		border-radius: 100%;
+	}
+
+	&.player1::before,
+	&.player2::before {
+		animation: 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) tileDrop;
+	}
+
+	&.player1::before {
+		background: $player1;
+	}
+	&.player2::before {
+		background: $player2;
+	}
+}
+
+.c4.debug {
+	.c4__tile {
+		&.no-wins1 {
+			background: rgba(darken($player2, 30), 0.3);
+		}
+		&.no-wins2 {
+			background: rgba(darken($player1, 30), 0.3);
+		}
+		&.no-wins1.no-wins2 {
+			background: $grey--dark;
+		}
+
+		&.vital1 .c4__slot::before {
+			box-shadow: 0 0 0 100px $player1;
+		}
+		&.vital2 .c4__slot::before {
+			box-shadow: 0 0 0 100px $player2;
+		}
+		&.vital1.vital2 .c4__slot::before {
+			box-shadow: 0 0 0 100px green;
+		}
+
+		&.unreachable {
+			background: $black;
+			opacity: 0.5;
+		}
+	}
+}
+
+.c4__slot {
+	width: 100%;
+	height: 100%;
+
+	overflow: hidden;
+	position: relative;
+	&::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		right: 50%;
+		transform: translate(50%, -50%);
+
+		display: block;
+		width: 80%;
+		height: 80%;
+		border-radius: 100%;
+
+		box-shadow: 0 0 0 100px $board;
+	}
+}

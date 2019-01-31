@@ -1,0 +1,62 @@
+$grid-config: (
+	null: 20px,
+	flush: 0,
+	tight: 10px,
+	loose: 40px
+);
+
+@mixin grid-h($gutter) {
+	display: flex;
+	flex-wrap: wrap;
+
+	padding: 0;
+	list-style: none;
+
+	margin-left: -$gutter;
+	> .grid__item {
+		padding-left: $gutter;
+	}
+
+	&.grid-rev {
+		flex-direction: row-reverse;
+	}
+}
+
+@mixin grid-v($gutter) {
+	padding: 0;
+	list-style: none;
+
+	margin-top: -$gutter;
+	> .grid__item {
+		padding-top: $gutter;
+	}
+}
+
+@mixin grid($gutter) {
+	@include grid-h($gutter);
+	@include grid-v($gutter);
+}
+
+@each $variant, $gutter in $grid-config {
+	@if $variant == null {
+		.grid {
+			@include grid($gutter);
+		}
+	} @else {
+		.grid--#{$variant} {
+			@include grid($gutter);
+		}
+		.grid--h-#{$variant} {
+			@include grid-h($gutter);
+		}
+		.grid--v-#{$variant} {
+			@include grid-v($gutter);
+		}
+	}
+}
+
+.grid--rev {
+	> .grid__item {
+		float: right;
+	}
+}
