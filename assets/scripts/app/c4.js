@@ -54,17 +54,6 @@ define(
 					c4.init._currentPlayer(options);
 
 					c4.init._events(options);
-
-					// c4.turn.human(3);
-					// c4.turn.human(0);
-					// c4.turn.human(3);
-					// c4.turn.human(1);
-					// c4.turn.human(3);
-					// c4.turn.human(1);
-					// c4.turn.human(2);
-					// c4.turn.human(2);
-					// c4.turn.human(4);
-					// c4.turn.human(2);
 				},
 
 				_board: function (options) {
@@ -93,11 +82,15 @@ define(
 					}
 				},
 
-				computer: function () {
+				computer: function (x) {
 					if (currentPlayer === computer) {
-						let x = c4.ai.pickBestCol(currentPlayer);
+						// window.setTimeout(() => {
+							if (typeof x === 'undefined') {
+								x = c4.ai.pickBestCol(currentPlayer);
+							}
 
-						c4.turn._do(x);
+							c4.turn._do(x);
+						// }, 1000);
 					}
 				},
 
@@ -335,6 +328,7 @@ define(
 				_getColPriority: function (x, player) {
 					var y = board.getColHeight(x);
 					var priority = 0;
+					var cursor;
 
 					// You can't go here because the column is full
 					if (y >= height) {
@@ -347,8 +341,20 @@ define(
 					}
 
 					// If your opponent goes here, they will win
-					if (c4.analyse.checkForWinner({x, y}, c4.turn.getOtherPlayer()).length) {
+					if (c4.analyse.checkForWinner({x, y}, c4.turn.getOtherPlayer(player)).length) {
 						return 900;
+					}
+
+					// If you go here, your opponent will go above you and win
+					cursor = board.getCursor({x, y});
+					if (cursor.up() && cursor.getVital(c4.turn.getOtherPlayer(player))) {
+						priority -= 50;
+					}
+
+					// If you go here, your opponent will go above you and block you winning
+					cursor = board.getCursor({x, y});
+					if (cursor.up() && cursor.getVital(player)) {
+						priority -= 40;
 					}
 
 					// TODO: Create a cloned board so you can see what effect
